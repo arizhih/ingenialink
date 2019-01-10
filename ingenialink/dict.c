@@ -653,6 +653,8 @@ static int parse_reg(xmlNodePtr node, il_dict_t *dict)
 		reg->subnode = 1;
 	}
 
+	reg->subnode = strtoul((char *)param, NULL, 4);
+
 	/* parse: blacklisted */
 	param = xmlGetProp(node, (const xmlChar *)"blacklisted");
 	if (!param) {
@@ -665,7 +667,6 @@ static int parse_reg(xmlNodePtr node, il_dict_t *dict)
 	if (!cyclic) reg->cyclic = "";
 	else reg->cyclic = (char *)cyclic;
 	
-	reg->subnode = strtoul((char *)param, NULL, 4);
 
 	/* parse: address */
 	param = xmlGetProp(node, (const xmlChar *)"address");
