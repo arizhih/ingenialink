@@ -161,6 +161,8 @@ typedef struct {
 	const char *cat_id;
 	/** Subcategory ID. */
 	const char *scat_id;
+	/** Blacklisted register. */
+	uint8_t blacklisted;
 } il_reg_t;
 
 /** @} */

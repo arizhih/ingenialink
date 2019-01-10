@@ -653,6 +653,12 @@ static int parse_reg(xmlNodePtr node, il_dict_t *dict)
 		reg->subnode = 1;
 	}
 
+	/* parse: blacklisted */
+	param = xmlGetProp(node, (const xmlChar *)"blacklisted");
+	if (!param) {
+		reg->blacklisted = 0;
+	}
+
 	/* parse: cyclic */
 	xmlChar *cyclic;
 	cyclic = xmlGetProp(node, (const xmlChar *)"cyclic");
@@ -707,7 +713,7 @@ static int parse_reg(xmlNodePtr node, il_dict_t *dict)
 
 	/* parse: storage (optional) */
 	param = xmlGetProp(node, (const xmlChar *)"storage");
-	if (param) {
+	if (param && reg->blacklisted == 0) {
 		get_storage((char *)param, reg);
 		reg->storage_valid = 1;
 		xmlFree(param);
