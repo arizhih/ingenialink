@@ -660,6 +660,9 @@ static int parse_reg(xmlNodePtr node, il_dict_t *dict)
 	if (!param) {
 		reg->blacklisted = 0;
 	}
+	else {
+		reg->blacklisted = 1;
+	}
 
 	/* parse: cyclic */
 	xmlChar *cyclic;
