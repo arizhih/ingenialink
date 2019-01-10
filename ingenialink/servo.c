@@ -228,47 +228,49 @@ int il_servo_dict_storage_write(il_servo_t *servo)
 		if (reg->access != IL_REG_ACCESS_RW)
 			continue;
 
-		switch (reg->dtype) {
-		case IL_REG_DTYPE_U8:
-			r = il_servo_raw_write_u8(servo, NULL, ids[i],
-						  reg->storage.u8, 1, 0);
-			break;
-		case IL_REG_DTYPE_S8:
-			r = il_servo_raw_write_s8(servo, NULL, ids[i],
-						  reg->storage.s8, 1, 0);
-			break;
-		case IL_REG_DTYPE_U16:
-			r = il_servo_raw_write_u16(servo, NULL, ids[i],
-						   reg->storage.u16, 1, 0);
-			break;
-		case IL_REG_DTYPE_S16:
-			r = il_servo_raw_write_s16(servo, NULL, ids[i],
-						   reg->storage.s16, 1, 0);
-			break;
-		case IL_REG_DTYPE_U32:
-			r = il_servo_raw_write_u32(servo, NULL, ids[i],
-						   reg->storage.u32, 1, 0);
-			break;
-		case IL_REG_DTYPE_S32:
-			r = il_servo_raw_write_s32(servo, NULL, ids[i],
-						   reg->storage.s32, 1, 0);
-			break;
-		case IL_REG_DTYPE_U64:
-			r = il_servo_raw_write_u64(servo, NULL, ids[i],
-						   reg->storage.u64, 1, 0);
-			break;
-		case IL_REG_DTYPE_S64:
-			r = il_servo_raw_write_s64(servo, NULL, ids[i],
-						   reg->storage.s64, 1, 0);
-			break;
-		case IL_REG_DTYPE_FLOAT:
-			r = il_servo_raw_write_float(servo, NULL, ids[i],
-						     reg->storage.flt, 1, 0);
-			break;
-		default:
-			continue;
+		if (reg->blacklisted == 0) {
+			switch (reg->dtype) {
+				case IL_REG_DTYPE_U8:
+					r = il_servo_raw_write_u8(servo, NULL, ids[i],
+								reg->storage.u8, 1, 0);
+					break;
+				case IL_REG_DTYPE_S8:
+					r = il_servo_raw_write_s8(servo, NULL, ids[i],
+								reg->storage.s8, 1, 0);
+					break;
+				case IL_REG_DTYPE_U16:
+					r = il_servo_raw_write_u16(servo, NULL, ids[i],
+								reg->storage.u16, 1, 0);
+					break;
+				case IL_REG_DTYPE_S16:
+					r = il_servo_raw_write_s16(servo, NULL, ids[i],
+								reg->storage.s16, 1, 0);
+					break;
+				case IL_REG_DTYPE_U32:
+					r = il_servo_raw_write_u32(servo, NULL, ids[i],
+								reg->storage.u32, 1, 0);
+					break;
+				case IL_REG_DTYPE_S32:
+					r = il_servo_raw_write_s32(servo, NULL, ids[i],
+								reg->storage.s32, 1, 0);
+					break;
+				case IL_REG_DTYPE_U64:
+					r = il_servo_raw_write_u64(servo, NULL, ids[i],
+								reg->storage.u64, 1, 0);
+					break;
+				case IL_REG_DTYPE_S64:
+					r = il_servo_raw_write_s64(servo, NULL, ids[i],
+								reg->storage.s64, 1, 0);
+					break;
+				case IL_REG_DTYPE_FLOAT:
+					r = il_servo_raw_write_float(servo, NULL, ids[i],
+									reg->storage.flt, 1, 0);
+					break;
+				default:
+					continue;
+			}
 		}
-
+		
 		if (r < 0)
 			continue;
 	}

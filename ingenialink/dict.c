@@ -1273,6 +1273,12 @@ int il_dict_reg_storage_update(il_dict_t *dict, const char *id,
 	(void)xmlSetProp(node, (const xmlChar *)"storage",
 			 (const xmlChar *)value);
 
+	/* If the register is in the blacklist, set the blacklisted attribute to 1 */
+	if (reg->blacklisted == 1) {
+		(void)xmlSetProp(node, (const xmlChar *)"blacklisted",
+			 (const xmlChar *)"1");
+	}
+
 	return 0;
 }
 
