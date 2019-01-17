@@ -1276,12 +1276,15 @@ IL_EXPORT int il_servo_wait_reached(il_servo_t *servo, int timeout);
  *	0 if a servo is found, IL_EFAIL if none are found.
  */
 IL_EXPORT int il_servo_lucky(il_net_prot_t prot, il_net_t **net,
-			     il_servo_t **servo, const char *dict);
+			    il_servo_t **servo, const char *dict);
 
 IL_EXPORT int il_servo_lucky_eth(il_net_prot_t prot, il_net_t **net,
-			     il_servo_t **servo, const char *dict, const char *address_ip);
+			    il_servo_t **servo, const char *dict, const char *address_ip);
 
 IL_EXPORT int il_servo_is_connected(il_net_t **net, const char *address_ip);
+
+IL_EXPORT int il_servos_connected_subnet(il_net_t **net, const char *address_ip, 
+				const char *available_ips[]);
 
 /** @} */
 

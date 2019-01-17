@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+#include <winsock2.h>
+#include <WS2tcpip.h>
 #include "servo.h"
 
 #include "ingenialink/err.h"
+#include <windows.h>
+
 
 /*******************************************************************************
  * Internal
@@ -701,3 +704,136 @@ int il_servo_is_connected(il_net_t **net, const char *address_ip)
 	
 	return r;
 }
+
+DWORD WINAPI MyThreadFunction(LPVOID lpParam);
+//void ErrorHandler(LPTSTR lpszFunction);
+
+typedef struct MyData {
+	char *ip;
+} MYDATA, *PMYDATA;
+
+
+
+void *is_slave_connected_thread(void *vargp) 
+{
+	char *ip = (char *)vargp;
+}
+
+int il_servos_connected_subnet(il_net_t **net, const char *master_address_ip, 
+			const char *available_ips[]) 
+{
+	int r = 0;
+	
+	struct sockaddr_in sa;
+	char str[INET_ADDRSTRLEN];	// Maximum of an IPv4
+	
+	PMYDATA pDataArray[254];
+	DWORD   dwThreadIdArray[254];
+	HANDLE  hThreadArray[254];
+
+	
+	for (int i = 1; i < 254; i++)
+	{
+		inet_pton(AF_INET, master_address_ip, &(sa.sin_addr));
+		sa.sin_addr.S_un.S_un_b.s_b4 = i;
+		inet_ntop(AF_INET, &(sa.sin_addr), str, INET_ADDRSTRLEN);
+
+		pDataArray[i] = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MYDATA));
+
+		if (pDataArray[i] == NULL)
+		{
+			// If the array allocation fails, the system is out of memory
+			// so there is no point in trying to print an error message.
+			// Just terminate execution.
+			ExitProcess(2);
+		}
+
+		pDataArray[i]->ip = str;
+
+		hThreadArray[i] = CreateThread(
+			NULL,                   // default security attributes
+			0,                      // use default stack size  
+			MyThreadFunction,       // thread function name
+			pDataArray[i],          // argument to thread function 
+			0,                      // use default creation flags 
+			&dwThreadIdArray[i]);   // returns the thread identifier 
+
+		if (hThreadArray[i] == NULL)
+		{
+			//ErrorHandler(TEXT("CreateThread"));
+			printf("Error during thread creation");
+			ExitProcess(3);
+		}
+
+		
+
+		for (int i = 1; i<254; i++)
+		{
+			//CloseHandle(hThreadArray[i]);
+			//if (pDataArray[i] != NULL)
+			//{
+			//	HeapFree(GetProcessHeap(), 0, pDataArray[i]);
+			//	pDataArray[i] = NULL;    // Ensure address is not reused.
+			//}
+		}
+
+	}
+
+	// Wait until all threads have terminated.
+	WaitForMultipleObjects(254, hThreadArray, TRUE, INFINITE);
+
+	//for (int i = 1; i < 254; ++i) {
+	//	
+	//	pthread_create(&tid, NULL, is_slave_connected_thread, (void *)&str);
+	//	
+	//	
+	//	r = il_servo_is_connected(net, str);
+	//	if (r == 1) {
+	//		printf(str);
+	//	}
+	//}
+
+	return r;
+}
+
+int i = 0;
+
+DWORD WINAPI MyThreadFunction(LPVOID lpParam)
+{
+	HANDLE hStdout;
+	PMYDATA pDataArray;
+
+	TCHAR msgBuf[255];
+	size_t cchStringSize;
+	DWORD dwChars;
+
+	pDataArray = (PMYDATA)lpParam;
+	i = i + 1;
+	printf("Hola\n");
+	printf("%d\n", i);
+	printf("\n");
+	//printf("IP: ");
+	//printf(pDataArray->ip);
+	//printf("\n");
+	//// Make sure there is a console to receive output results. 
+
+	//hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	//if (hStdout == INVALID_HANDLE_VALUE)
+	//	return 1;
+
+	//// Cast the parameter to the correct data type.
+	//// The pointer is known to be valid because 
+	//// it was checked for NULL before the thread was created.
+
+	//pDataArray = (PMYDATA)lpParam;
+
+	//// Print the parameter values using thread-safe functions.
+
+	//StringCchPrintf(msgBuf, BUF_SIZE, TEXT("Parameters = %d, %d\n"),
+	//	pDataArray->val1, pDataArray->val2);
+	//StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
+	//WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
+
+	return 0;
+}
+
